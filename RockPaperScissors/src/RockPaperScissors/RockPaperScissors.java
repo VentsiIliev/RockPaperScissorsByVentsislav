@@ -10,26 +10,30 @@ public class RockPaperScissors {
         System.out.println("How many rounds would you like to play?");
         int rounds = Integer.parseInt(scanner.nextLine());
 
+        System.out.println("Choose wisely");
+        System.out.println("[r]ock");
+        System.out.println("[p]aper");
+        System.out.println("[s]cissors");
+
+        int playerWins = 0;
+        int computerWins = 0;
+        int draws = 0;
+
         for (int i = 0; i < rounds; i++) {
 
+            String userInput = scanner.nextLine();
 
-            System.out.println("Choose wisely");
-            System.out.println("Press 0 for Rock");
-            System.out.println("Press 1 for Paper");
-            System.out.println("Press 2 for Scissors");
-
-            int userInput = Integer.parseInt(scanner.nextLine());
-
-            while (userInput != 0 && userInput != 1 && userInput != 2) {
+            while (
+                    !"r".equals(userInput) && !"p".equals(userInput) && !"s".equals(userInput)) {
                 System.out.println("Invalid input.");
-                System.out.println("Please enter a valid number (0, 1, 2).");
-                userInput = Integer.parseInt(scanner.nextLine());
+                System.out.println("Please enter a valid number ([r]ock, [p]aper, [s]cissors).");
+                userInput = scanner.nextLine();
             }
 
             String userChoice = "";
-            if (userInput == 0) {
+            if ("r".equals(userInput)) {
                 userChoice = "Rock";
-            } else if (userInput == 1) {
+            } else if ("p".equals(userInput)) {
                 userChoice = "Paper";
             } else {
                 userChoice = "Scissors";
@@ -51,18 +55,30 @@ public class RockPaperScissors {
 
             System.out.printf("The computer chose %s!\n", computerMove);
 
-            if (userInput == 0 && randomNumber == 2) {
+            if ("r".equals(userInput) && randomNumber == 2) {
+                playerWins++;
                 System.out.println("YOU WIN!!");
-            } else if (userInput == 1 && randomNumber == 0) {
+            } else if ("p".equals(userInput) && randomNumber == 0) {
+                playerWins++;
                 System.out.println("YOU WIN!");
-            } else if (userInput == 2 && randomNumber == 1) {
+            } else if ("s".equals(userInput) && randomNumber == 1) {
+                playerWins++;
                 System.out.println("YOU WIN!");
-            } else if (userInput == randomNumber) {
+            } else if (userChoice.equals(computerMove)) {
+                draws++;
                 System.out.println("It`s a draw");
             } else {
+                computerWins++;
                 System.out.println("YOU LOST!");
             }
             System.out.println("************************");
+        }
+
+        System.out.println("Stats");
+        System.out.printf("You %d : %d Computer\n", playerWins, computerWins);
+
+        if (draws > 0) {
+            System.out.printf("Draws: %d", draws);
         }
     }
 }
