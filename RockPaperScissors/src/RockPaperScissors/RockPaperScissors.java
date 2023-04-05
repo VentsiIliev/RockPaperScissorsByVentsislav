@@ -5,13 +5,13 @@ import java.util.Scanner;
 
 public class RockPaperScissors {
     static Scanner scanner = new Scanner(System.in);
-    public static int playerWins;
-    public static int computerWins;
-    public static int draws;
-    public static String answer;
-    public static boolean isException;
-    public static int rounds;
-    public static int currentRound = 1;
+    static int playerWins;
+    static int computerWins;
+    static int draws;
+    static String answer;
+    static boolean isException;
+    static int rounds;
+    static int currentRound = 1;
     
 
     public static void playRockPaperScissors() {
@@ -79,8 +79,8 @@ public class RockPaperScissors {
         System.out.println("----------------------------");
 
 
-        // STATS
-        System.out.println("Stats");
+        // SCORE
+        System.out.println("Score");
         System.out.printf("You %d : %d Computer\n", playerWins, computerWins);
 
         if (draws > 0) {
