@@ -12,17 +12,17 @@ public class RockPaperScissors {
     static boolean isException;
     static int rounds;
     static int currentRound = 1;
-    
+
 
     public static void playRockPaperScissors() {
 
-        // GIVE OPTIONS
+        // PRINT MOVE OPTIONS
         System.out.println("Choose wisely");
         System.out.println("[R]ock, [P]aper, [S]cissors");
 
         // GAME
 
-        // GET INPUT
+        // GET PLAYER CHOICE
         // VALIDATE INPUT
         String playerChoice = scanner.nextLine().toLowerCase();
         while (!"r".equals(playerChoice) && !"p".equals(playerChoice) && !"s".equals(playerChoice)) {
@@ -32,7 +32,7 @@ public class RockPaperScissors {
         }
 
 
-        // PLAYER CHOISE
+        // PRINT PLAYER CHOICE
         if ("r".equals(playerChoice)) {
             playerChoice = "Rock";
         } else if ("p".equals(playerChoice)) {
@@ -44,10 +44,11 @@ public class RockPaperScissors {
         System.out.printf("You chose %s!\n", playerChoice);
 
 
-        // COMPUTER CHOICE
+        // GET COMPUTER CHOICE
         Random random = new Random();
         int randomNumber = random.nextInt(3);
 
+        // PRINT COMPUTER CHOICE
         String computerChoice = "";
         if (randomNumber == 0) {
             computerChoice = "Rock";
@@ -59,7 +60,7 @@ public class RockPaperScissors {
         System.out.printf("The computer chose %s!\n", computerChoice);
 
 
-        // ROUND OUTCOME OPTIONS
+        // DETERMINE AND PRINT ROUND OUTCOME
         if ("Rock".equals(playerChoice) && randomNumber == 2) {
             playerWins++;
             System.out.println("YOU WIN!!");
@@ -86,6 +87,7 @@ public class RockPaperScissors {
         if (draws > 0) {
             System.out.printf("Draws: %d\n", draws);
         }
+
         // TIE BREAK
         // VALIDATE INPUT
         if (currentRound == rounds) {
@@ -103,32 +105,11 @@ public class RockPaperScissors {
                     }
                 } else {
                     askIfPlayerWantToPlayAgain();
+                    startGame();
                 }
             }
         }
-        askIfPlayerWantToPlayAgain();
-    }
 
-    // ASK PLAYER HOW MANY ROUND TO PLAY
-    // VALIDATE INPUT
-    public static void askHowManyRounds() {
-        System.out.println("How many rounds would you like to play?");
-        rounds = Integer.parseInt(scanner.nextLine());
-        while (rounds <= 0) {
-            System.out.println("Please enter whole number grater than 0!");
-            rounds = Integer.parseInt(scanner.nextLine());
-        }
-        if (rounds == 1) {
-            playRockPaperScissors();
-        } else {
-            for (int i = 1; i <= rounds; i++) {
-                playRockPaperScissors();
-                currentRound++;
-            }
-        }
-    }
-
-    public static void askIfPlayerWantToPlayAgain() {
         // ASK IF PLAYER WANTS TO PLAY AGAIN
         if (currentRound == rounds) {
             System.out.println("Do you want to start a New Game? [Y]es [N]o");
@@ -144,9 +125,33 @@ public class RockPaperScissors {
                 playerWins = 0;
                 draws = 0;
                 askHowManyRounds();
+                startGame();
             } else {
                 System.exit(0);
             }
         }
+    }
+
+    // ASK PLAYER HOW MANY ROUND TO PLAY
+    // VALIDATE INPUT
+    public static void askHowManyRounds() {
+        System.out.println("How many rounds would you like to play?");
+        rounds = Integer.parseInt(scanner.nextLine());
+        while (rounds <= 0) {
+            System.out.println("Please enter whole number grater than 0!");
+            rounds = Integer.parseInt(scanner.nextLine());
+        }
+    }
+
+    public static void startGame() {
+        // START GAME
+        for (int i = 1; i <= rounds; i++) {
+            playRockPaperScissors();
+            currentRound++;
+        }
+    }
+
+    public static void askIfPlayerWantToPlayAgain() {
+
     }
 }
