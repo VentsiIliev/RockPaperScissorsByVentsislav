@@ -110,26 +110,7 @@ public class RockPaperScissors {
             }
         }
 
-        // ASK IF PLAYER WANTS TO PLAY AGAIN
-        if (currentRound == rounds) {
-            System.out.println("Do you want to start a New Game? [Y]es [N]o");
-            answer = scanner.nextLine().toUpperCase();
-            while (!"Y".equals(answer) && !"N".equals(answer)) {
-                System.out.println("INVALID INPUT");
-                System.out.println("[Y]es [N]o");
-                answer = scanner.nextLine().toUpperCase();
-            }
-            if ("Y".equals(answer)) {
-                currentRound = 1;
-                computerWins = 0;
-                playerWins = 0;
-                draws = 0;
-                askHowManyRounds();
-                startGame();
-            } else {
-                System.exit(0);
-            }
-        }
+        askIfPlayerWantToPlayAgain();
     }
 
     // ASK PLAYER HOW MANY ROUND TO PLAY
@@ -152,6 +133,25 @@ public class RockPaperScissors {
     }
 
     public static void askIfPlayerWantToPlayAgain() {
-
+        // ASK IF PLAYER WANTS TO PLAY AGAIN
+        if (currentRound == rounds) {
+            System.out.println("Do you want to start a New Game? [Y]es [N]o");
+            answer = scanner.nextLine().toUpperCase();
+            while (!"Y".equals(answer) && !"N".equals(answer)) {
+                System.out.println("INVALID INPUT");
+                System.out.println("[Y]es [N]o");
+                answer = scanner.nextLine().toUpperCase();
+            }
+            if ("Y".equals(answer)) {
+                currentRound = 1;
+                computerWins = 0;
+                playerWins = 0;
+                draws = 0;
+                askHowManyRounds();
+                startGame();
+            } else {
+                System.exit(0);
+            }
+        }
     }
 }
