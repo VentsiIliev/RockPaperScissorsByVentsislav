@@ -1,5 +1,7 @@
 package RockPaperScissors;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -8,150 +10,196 @@ public class RockPaperScissors {
     static int playerWins;
     static int computerWins;
     static int draws;
-    static String answer;
-    static boolean isException;
-    static int rounds;
-    static int currentRound = 1;
+    static int currentRound;
 
-
-    public static void playRockPaperScissors() {
-
+    public static void printMoveOptions() {
         // PRINT MOVE OPTIONS
         System.out.println("Choose wisely");
         System.out.println("[R]ock, [P]aper, [S]cissors");
+    }
 
-        // GAME
+    public static String getPlayerInput() {
+        // PRINT MOVE OPTIONS
+        // GET PLAYER INPUT
+        return getValidInput("r", "p", "s");
+    }
 
+    public static String getPlayerChoice(String playerInput) {
         // GET PLAYER CHOICE
-        // VALIDATE INPUT
-        String playerChoice = scanner.nextLine().toLowerCase();
-        while (!"r".equals(playerChoice) && !"p".equals(playerChoice) && !"s".equals(playerChoice)) {
-            System.out.println("Invalid input.");
-            System.out.println("[R]ock, [P]aper, [S]cissors");
-            playerChoice = scanner.nextLine().toLowerCase();
-        }
-
-
-        // PRINT PLAYER CHOICE
-        if ("r".equals(playerChoice)) {
+        String playerChoice = "";
+        if ("r".equals(playerInput)) {
             playerChoice = "Rock";
-        } else if ("p".equals(playerChoice)) {
+        } else if ("p".equals(playerInput)) {
             playerChoice = "Paper";
         } else {
             playerChoice = "Scissors";
         }
-        System.out.printf("--------- ROUND: %d ---------\n", currentRound);
-        System.out.printf("You chose %s!\n", playerChoice);
+        return playerChoice;
+    }
 
-
+    public static String getComputerChoice() {
         // GET COMPUTER CHOICE
         Random random = new Random();
         int randomNumber = random.nextInt(3);
 
-        // PRINT COMPUTER CHOICE
+        HashMap<Integer, String> computerChoiceHashMap = new HashMap<>();
+        computerChoiceHashMap.put(0, "Rock");
+        computerChoiceHashMap.put(1, "Paper");
+        computerChoiceHashMap.put(2, "Scissors");
+
         String computerChoice = "";
-        if (randomNumber == 0) {
-            computerChoice = "Rock";
-        } else if (randomNumber == 1) {
-            computerChoice = "Paper";
-        } else {
-            computerChoice = "Scissors";
+        for (Map.Entry<Integer, String> entry : computerChoiceHashMap.entrySet()) {
+            if (entry.getKey() == randomNumber) {
+                computerChoice = entry.getValue();
+            }
         }
-        System.out.printf("The computer chose %s!\n", computerChoice);
+        return computerChoice;
+    }
 
-
-        // DETERMINE AND PRINT ROUND OUTCOME
-        if ("Rock".equals(playerChoice) && randomNumber == 2) {
-            playerWins++;
-            System.out.println("YOU WIN!!");
-        } else if ("Paper".equals(playerChoice) && randomNumber == 0) {
-            playerWins++;
-            System.out.println("YOU WIN!");
-        } else if ("Scissors".equals(playerChoice) && randomNumber == 1) {
-            playerWins++;
-            System.out.println("YOU WIN!");
+    public static String getRoundResult(String playerChoice, String computerChoice) {
+        // DETERMINE OUTCOME
+        String roundResult = "";
+        if ("Rock".equals(playerChoice) && "Scissors".equals(computerChoice)) {
+            roundResult = "YOU WIN!";
+        } else if ("Paper".equals(playerChoice) && "Rock".equals(computerChoice)) {
+            roundResult = "YOU WIN!";
+        } else if ("Scissors".equals(playerChoice) && "Paper".equals(computerChoice)) {
+            roundResult = "YOU WIN!";
         } else if (playerChoice.equals(computerChoice)) {
-            draws++;
-            System.out.println("It`s a draw");
+            roundResult = "IT`S A DRAW";
         } else {
-            computerWins++;
-            System.out.println("YOU LOST!");
+            roundResult = "YOU LOST!";
         }
-        System.out.println("----------------------------");
+        return roundResult;
+    }
 
+    public static void updateScore(String roundResult) {
+        if (roundResult.equalsIgnoreCase("you win!")) {
+            playerWins++;
+        } else if (roundResult.equalsIgnoreCase("you lost!")) {
+            computerWins++;
+        } else {
+            draws++;
+        }
+    }
 
-        // SCORE
-        System.out.println("Score");
+    public static void printScore(String playerChoice, String computerChoice, String roundResult) {
+
+        System.out.println("-----------Round " + currentRound + "-----------");
+        System.out.println("You chose " + playerChoice);
+        System.out.println("Computer chose " + computerChoice);
+        System.out.println(roundResult);
+        System.out.println("-----------Score-----------");
         System.out.printf("You %d : %d Computer\n", playerWins, computerWins);
 
         if (draws > 0) {
             System.out.printf("Draws: %d\n", draws);
+            System.out.println("----------------------------");
+        } else {
+            System.out.println("-------------------------");
         }
+    }
 
-        // TIE BREAK
-        // VALIDATE INPUT
-        if (currentRound == rounds) {
-            if (computerWins == playerWins) {
-                System.out.println("It`s a tie. Do you want to play tie break rounds? [Y]es [N]o");
-                answer = scanner.nextLine().toUpperCase();
-                while (!"Y".equals(answer) && !"N".equals(answer)) {
-                    System.out.println("INVALID INPUT");
-                    System.out.println("[Y]es [N]o");
-                    answer = scanner.nextLine().toUpperCase();
-                }
-                if ("Y".equals(answer)) {
-                    while (computerWins == playerWins) {
-                        playRockPaperScissors();
-                    }
+    public static void startGame(int roundsCount, int currentRound) {
+        printMoveOptions();
+        String playerInput = getPlayerInput();
+        String playerChoice = getPlayerChoice(playerInput);
+        String computerChoice = getComputerChoice();
+        String roundResult = getRoundResult(playerChoice, computerChoice);
+        updateScore(roundResult);
+        printScore(playerChoice, computerChoice, roundResult);
+
+        // PLAY TIE BREAK - START NEW GAME - EXIT
+        if (currentRound == roundsCount && playerWins == computerWins) {
+            System.out.println("It`s a tie. Do you want to play tie break rounds? [Y]es [N]o");
+            playTieBreak(roundsCount, RockPaperScissors.currentRound);
+        } else if (currentRound == roundsCount) {
+            restartOrExit(roundsCount);
+        }
+    }
+
+    public static int getValidInput(int lowLimit, int highLimit) {
+        boolean isInputValid = false;
+        while (true) {
+            try {
+                int input = Integer.parseInt(scanner.nextLine());
+                if (input < lowLimit || input > highLimit) {
+                    System.out.println("Invalid Input");
                 } else {
-                    askIfPlayerWantToPlayAgain();
-                    startGame();
+                    isInputValid = true;
+                    return input;
                 }
+            } catch (Exception e) {
+                System.out.println("Invalid input");
             }
-        }
-
-        askIfPlayerWantToPlayAgain();
-    }
-
-    // ASK PLAYER HOW MANY ROUND TO PLAY
-    // VALIDATE INPUT
-    public static void askHowManyRounds() {
-        System.out.println("How many rounds would you like to play?");
-        rounds = Integer.parseInt(scanner.nextLine());
-        while (rounds <= 0) {
-            System.out.println("Please enter whole number grater than 0!");
-            rounds = Integer.parseInt(scanner.nextLine());
         }
     }
 
-    public static void startGame() {
-        // START GAME
-        for (int i = 1; i <= rounds; i++) {
-            playRockPaperScissors();
-            currentRound++;
+    public static String getValidInput(String optionOne, String optionTwo, String optionThree) {
+        String playerInput = scanner.nextLine();
+        while (!optionOne.equalsIgnoreCase(playerInput) && !optionTwo.equalsIgnoreCase(playerInput) && !optionThree.equalsIgnoreCase(playerInput)) {
+            System.out.println("Invalid input.");
+            System.out.println("[R]ock, [P]aper, [S]cissors");
+            playerInput = scanner.nextLine().toLowerCase();
+        }
+        return playerInput;
+    }
+
+    public static String getValidInput(String optionOne, String optionTwo) {
+        String playerInput = scanner.nextLine();
+        while (!optionOne.equalsIgnoreCase(playerInput) && !optionTwo.equalsIgnoreCase(playerInput)) {
+            System.out.println("Invalid input.");
+            playerInput = scanner.nextLine().toLowerCase();
+        }
+        return playerInput;
+    }
+
+
+    public static void restartOrExit(int roundsCount) {
+        System.out.println("[S]TART NEW GAME");
+        System.out.println("[E]XIT");
+        String answer = getValidInput("s", "e");
+        if (answer.equalsIgnoreCase("s")) {
+            resetScore();
+            startNewGame(roundsCount, RockPaperScissors.currentRound);
+        } else {
+            System.exit(0);
         }
     }
 
-    public static void askIfPlayerWantToPlayAgain() {
-        // ASK IF PLAYER WANTS TO PLAY AGAIN
-        if (currentRound == rounds) {
-            System.out.println("Do you want to start a New Game? [Y]es [N]o");
-            answer = scanner.nextLine().toUpperCase();
-            while (!"Y".equals(answer) && !"N".equals(answer)) {
-                System.out.println("INVALID INPUT");
-                System.out.println("[Y]es [N]o");
-                answer = scanner.nextLine().toUpperCase();
+    public static void playTieBreak(int roundsCount, int currentRound) {
+
+        String answer = getValidInput("y", "n");
+        if ("Y".equalsIgnoreCase(answer)) {
+            while (computerWins == playerWins) {
+                currentRound++;
+                printMoveOptions();
+                String playerInput = getValidInput("r","p","s");
+                String playerChoice = getPlayerChoice(playerInput);
+                String computerChoice = getComputerChoice();
+                String roundResult = getRoundResult(playerChoice,computerChoice);
+                updateScore(roundResult);
+                printScore(playerChoice,computerChoice, roundResult);
             }
-            if ("Y".equals(answer)) {
-                currentRound = 1;
-                computerWins = 0;
-                playerWins = 0;
-                draws = 0;
-                askHowManyRounds();
-                startGame();
-            } else {
-                System.exit(0);
-            }
+            restartOrExit(roundsCount);
+        } else {
+            restartOrExit(roundsCount);
+        }
+    }
+
+    public static void resetScore() {
+        playerWins = 0;
+        computerWins = 0;
+        draws = 0;
+        currentRound = 1;
+    }
+
+    public static void startNewGame(int roundsCount, int currentRound) {
+        System.out.printf("HOW MANY ROUNDS WOULD YOU LIKE TO PLAY (1 - %d)\n", Integer.MAX_VALUE);
+        roundsCount = getValidInput(1, Integer.MAX_VALUE);
+        for (int i = 0; i < roundsCount; i++) {
+            startGame(roundsCount, RockPaperScissors.currentRound);
+            RockPaperScissors.currentRound++;
         }
     }
 }
