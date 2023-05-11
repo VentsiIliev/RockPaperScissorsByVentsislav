@@ -2,19 +2,14 @@ package RockPaperScissors;
 
 public class Main {
     public static void main(String[] args) {
-        RockPaperScissors playGame = new RockPaperScissors();
 
-        RockPaperScissors.isException = true;
-        do {
-            try {
-                RockPaperScissors.askHowManyRounds();
-                RockPaperScissors.startGame();
-                RockPaperScissors.isException = false;
-            } catch (Exception e) {
-                System.out.println("INVALID INPUT");
-                System.out.println("Please enter whole number grater than 0");
-            }
-        } while (RockPaperScissors.isException);
+        System.out.printf("HOW MANY ROUNDS WOULD YOU LIKE TO PLAY (1 - %d)\n", Integer.MAX_VALUE);
+        int roundsCount = RockPaperScissors.getValidInput(1, Integer.MAX_VALUE);
+        for (int i = 0; i < roundsCount; i++) {
+            RockPaperScissors.currentRound = 1;
+            RockPaperScissors.startGame(roundsCount,RockPaperScissors.currentRound);
+            RockPaperScissors.currentRound++;
+        }
 
     }
 }
